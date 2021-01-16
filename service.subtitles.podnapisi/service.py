@@ -11,6 +11,7 @@ from zipfile import ZipFile
 from cStringIO import StringIO
 import uuid
 import re
+import ssl
 
 __addon__ = xbmcaddon.Addon()
 __author__     = __addon__.getAddonInfo('author')
@@ -104,7 +105,9 @@ def Download(params):
     log( __scriptid__ ,"Extract using 'XBMC.Extract' method")
     exts = [".srt", ".sub", ".txt", ".smi", ".ssa", ".ass" ]
     zip = os.path.join( __temp__, "PN.zip")
-    f = urllib.urlopen(url)
+    ctx = ssl.SSLContext(ssl.PROTOCOL_TLS)
+    ctx.set_ciphers('ALL:@SECLEVEL=1')
+    f = urllib.urlopen(url, context=ctx)
     with open(zip, "wb") as subFile:
       subFile.write(f.read())
     subFile.close()
