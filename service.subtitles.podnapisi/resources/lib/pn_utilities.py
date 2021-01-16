@@ -8,6 +8,7 @@ import struct
 from xml.dom import minidom
 import urllib, zlib
 import xbmc, xbmcvfs
+import ssl
 
 try:
   # Python 2.6 +
@@ -367,7 +368,9 @@ class PNServer:
       return ""  
 
   def fetch(self,url):
-    socket = urllib.urlopen( url )
+    ctx = ssl.SSLContext(ssl.PROTOCOL_TLS)
+    ctx.set_ciphers('ALL:@SECLEVEL=1')
+    socket = urllib.urlopen( url, context=ctx )
     result = socket.read()
     socket.close()
     xmldoc = minidom.parseString(result)
